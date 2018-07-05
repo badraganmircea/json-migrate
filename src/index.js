@@ -1,42 +1,5 @@
 const config1 = require('./input/config1.json');
-
-Object.prototype.renameKey = function (oldKey, newKey) {
-    if (oldKey === newKey) {
-        return this;
-    }
-    if (this.hasOwnProperty(oldKey)) {
-        this[newKey] = this[oldKey];
-        delete this[oldKey];
-    }
-    return this;
-};
-
-Object.prototype.renameKeys = function (oldKey, newKey) {
-    if (oldKey === newKey) {
-        return this;
-    }
-
-    console.log('this COMP', this);
-    const iterate = (obj) => {
-        const objKeys = Object.keys(obj);
-        objKeys.forEach(property => {
-            if (obj.hasOwnProperty(property)) {
-                if (property === oldKey) {
-                    obj.renameKey(oldKey, newKey);
-                }
-                if (typeof obj[property] === "object") {
-                    iterate(obj[property]);
-                } else {
-                    // console.log(property + "   " + obj[property]);
-                }
-            }
-        });
-    };
-
-    iterate(this);
-    console.log('PRETTY');
-    console.log(JSON.stringify(this, null, 2));
-};
+require('./objectUtils');
 
 const componentConfig = {
     components: [
@@ -68,26 +31,26 @@ const mutationConfig = {
     version: '1',
     mutations: {
         COMPONENT1: [
-            {
-                mutationType: 'RENAME',
-                definition: {
-                    from: 'prop1',
-                    to: 'prop10'
-                }
-            },
             // {
-            //     mutateType: 'MOVE',
+            //     mutationType: 'RENAME',
             //     definition: {
-            //         from: 'props',
-            //         to: 'otherProps.someOtherProps'
+            //         from: 'prop1',
+            //         to: 'prop10'
             //     }
             // },
             // {
-            //     mutateType: 'DELETE',
+            //     mutationType: 'MOVE',
             //     definition: {
-            //         from: 'otherProps.someOtherProps.prop2'
+            //         from: 'otherFuckingProps.prop12',
+            //         to: 'props'
             //     }
-            // }
+            // },
+            {
+                mutationType: 'DELETE',
+                definition: {
+                    from: 'otherFuckingProps.prop12.prop1.value'
+                }
+            }
         ]
     }
 };
@@ -101,8 +64,13 @@ const mutationTypes = {
 
 const mutationActions = {
     [mutationTypes.RENAME]: (comp, definition) => {
-        console.log('COMP', comp);
-        return comp.renameKeys(definition.from, definition.to);
+        comp.renameKeys(definition.from, definition.to);
+    },
+    [mutationTypes.MOVE]: (comp, definition) => {
+        comp.moveKey(definition.from, definition.to);
+    },
+    [mutationTypes.DELETE]: (comp, definition) => {
+        comp.deleteKey(definition.from);
     }
 };
 
@@ -115,9 +83,10 @@ const mutate = (componentConfig, mutationConfig) => {
             return comp;
         }
 
-        console.log(mutations);
         mutations.forEach(mutation => {
+            console.log('MUTATION BEFORE', resultingComponent);
             mutationActions[mutation.mutationType](resultingComponent, mutation.definition);
+            console.log('MUTATION AFTER', resultingComponent);
         });
     })
 };
