@@ -1,0 +1,43 @@
+{
+  "type": "meh",
+  "name": "meh",
+  "title": "meh.meh",
+  "configuration": {
+    "mutationConfig": {
+      "version": "1",
+      "mutations": {
+        "COMPONENT1": [
+          {
+            "mutationType": "DELETE",
+            "definition": {
+              "from": "otherFuckingProps.prop12.prop1.value"
+            }
+          }
+        ]
+      }
+    },
+    "components": [
+      {
+        "type": "COMPONENT1",
+        "props": {
+          "prop1": "prop1 value",
+          "prop2": "prop2 value"
+        },
+        "otherFuckingProps": {
+          "prop12": {
+            "prop1": {
+              "value": "smt"
+            }
+          }
+        }
+      },
+      {
+        "type": "COMPONENT2",
+        "props": {
+          "prop1": "hjhjhjhj",
+          "prop2": "lklkllkll"
+        }
+      }
+    ]
+  }
+}

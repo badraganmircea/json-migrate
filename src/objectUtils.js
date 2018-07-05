@@ -5,7 +5,6 @@ Object.prototype.deleteKey = function (sourcePath) {
     const sourceKey = getSourceKey(sourcePath);
     const sourcePathList = sourcePath.split('.');
     sourcePathList.splice(-1, 1);
-    console.log(' source path list ', sourcePathList);
     const sourceObjectPath = sourcePathList.join('.');
     const sourceObject = getObj(sourceObjectPath, this);
     delete sourceObject[sourceKey];
@@ -56,6 +55,4 @@ Object.prototype.renameKeys = function (oldKey, newKey) {
     };
 
     iterate(this);
-    console.log('PRETTY');
-    console.log(JSON.stringify(this, null, 2));
 };
