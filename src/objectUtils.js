@@ -18,8 +18,6 @@ Object.prototype.moveKey = function (sourcePath, destinationPath) {
     destination[sourceKey] = source;
 
     this.deleteKey(sourcePath);
-    // TODO: delete source
-    // console.log('THIS', this);
 };
 
 Object.prototype.renameKey = function (oldKey, newKey) {
