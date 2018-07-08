@@ -1,7 +1,11 @@
 require('./objectUtils');
 const inputConfig = require('./input/inputConfig.json');
-const mutationConfig = require('./input/mutationsV2.json');
+const mutationConfig2 = require('./input/mutationsV2.json');
+const mutationConfig3 = require('./input/mutationsV3.json');
+const mutationConfig4 = require('./input/mutationsV4.json');
 
+// const mutationsList = [mutationConfig2, mutationConfig3, mutationConfig4];
+const mutationsList = [mutationConfig2, mutationConfig3];
 
 const mutationTypes = {
     ADD: 'ADD',
@@ -36,11 +40,20 @@ const mutate = (componentConfig, mutationConfig) => {
         }
 
         mutations.forEach(mutation => {
-            console.log('MUTATION BEFORE', resultingComponent);
             mutationActions[mutation.mutationType](resultingComponent, mutation.definition);
-            console.log('MUTATION AFTER', resultingComponent);
         });
+
+        return comp;
     })
 };
 
-mutate(inputConfig.configuration, mutationConfig);
+const migrate = (inputConfig, mutationsList) => {
+    let inProgressConfig = {...inputConfig};
+    mutationsList.forEach((mutation) => {
+        inProgressConfig.components = mutate(inProgressConfig, mutation);
+        console.log('config at version => ', mutation.version);
+        console.log('in progress config', JSON.stringify(inProgressConfig, null, 2));
+    });
+};
+
+migrate(inputConfig.configuration, mutationsList);
