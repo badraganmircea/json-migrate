@@ -1,6 +1,12 @@
 const getObj = (path, obj) => path.split('.').reduce((res, key) => res[key], obj);
 const getSourceKey = (sourcePath) => sourcePath.split('.')[sourcePath.split('.').length - 1];
 
+Object.prototype.addToKey = function(destinationPath, object) {
+    const destinationObj = getObj(destinationPath, this);
+    const destinationKey = destinationPath.split('.').splice(-1, 1);
+    destinationObj[destinationKey] = object;
+};
+
 Object.prototype.deleteKey = function (sourcePath) {
     const sourceKey = getSourceKey(sourcePath);
     const sourcePathList = sourcePath.split('.');

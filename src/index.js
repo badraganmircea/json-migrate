@@ -32,6 +32,9 @@ const mutationActions = {
     },
     [mutationTypes.DELETE]: (comp, definition) => {
         comp.deleteKey(definition.from);
+    },
+    [mutationTypes.ADD]: (comp, definition) => {
+        comp.addToKey(definition.to, definition.targetObject);
     }
 };
 
