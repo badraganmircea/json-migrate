@@ -1,0 +1,13 @@
+{
+  "version": "2",
+  "mutations": {
+    "COMPONENT1": [
+      {
+        "mutationType": "DELETE",
+        "definition": {
+          "from": "otherFuckingProps.prop12"
+        }
+      }
+    ]
+  }
+}
