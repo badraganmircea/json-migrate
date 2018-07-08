@@ -1,20 +1,7 @@
-const standardComponentConfig = require('./input/standardComponentConfig.json');
 require('./objectUtils');
+const inputConfig = require('./input/inputConfig.json');
+const mutationConfig = require('./input/mutationsV2.json');
 
-// {
-//     mutationType: 'RENAME',
-//     definition: {
-//         from: 'prop1',
-//         to: 'prop10'
-//     }
-// },
-// {
-//     mutationType: 'MOVE',
-//     definition: {
-//         from: 'otherFuckingProps.prop12',
-//         to: 'props'
-//     }
-// },
 
 const mutationTypes = {
     ADD: 'ADD',
@@ -38,8 +25,8 @@ const mutationActions = {
     }
 };
 
-const mutate = (componentConfig) => {
-    const {components, mutationConfig} = componentConfig;
+const mutate = (componentConfig, mutationConfig) => {
+    const {components} = componentConfig;
     return components.map(comp => {
         const mutations = mutationConfig.mutations[comp.type];
         const resultingComponent = {...comp};
@@ -56,4 +43,4 @@ const mutate = (componentConfig) => {
     })
 };
 
-mutate(standardComponentConfig.configuration);
+mutate(inputConfig.configuration, mutationConfig);

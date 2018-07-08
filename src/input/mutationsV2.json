@@ -1,0 +1,25 @@
+{
+  "version": "2",
+  "mutations": {
+    "COMPONENT1": [
+      {
+        "mutationType": "DELETE",
+        "definition": {
+          "from": "otherFuckingProps.prop12"
+        }
+      },
+      {
+        "mutationType": "ADD",
+        "definition": {
+          "to": "otherFuckingProps",
+          "targetObject": {
+            "props35": {
+              "props36": "some value"
+            },
+            "props38": "some other value"
+          }
+        }
+      }
+    ]
+  }
+}

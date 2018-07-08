@@ -1,0 +1,32 @@
+{
+  "version": "4",
+  "mutations": {
+    "COMPONENT1": [
+      {
+        "mutationType": "DELETE",
+        "definition": {
+          "from": "otherFuckingProps.prop12"
+        }
+      },
+      {
+        "mutationType": "MOVE",
+        "definition": {
+          "from": "props.prop1",
+          "to": "otherFuckingProps"
+        }
+      },
+      {
+        "mutationType": "ADD",
+        "definition": {
+          "to": "otherFuckingProps",
+          "targetObject": {
+            "props35": {
+              "props36": "some value"
+            },
+            "props38": "some other value"
+          }
+        }
+      }
+    ]
+  }
+}
