@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/badraganmircea/json-migrate/issues"
   },
-  "homepage": "https://github.com/badraganmircea/json-migrate#readme"
+  "homepage": "https://github.com/badraganmircea/json-migrate#readme",
+  "dependencies": {
+    "object-mutate": "^0.2.0"
+  }
 }

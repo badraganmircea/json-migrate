@@ -1,4 +1,4 @@
-require('./objectUtils');
+require('object-mutate/objectUtils');
 const inputConfig = require('./input/inputConfig.json');
 const mutationConfig2 = require('./input/mutationsV2.json');
 const mutationConfig3 = require('./input/mutationsV3.json');
