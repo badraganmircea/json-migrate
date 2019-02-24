@@ -1,7 +1,7 @@
 const readline = require('readline');
 const util = require('util');
 const debug = util.debuglog('cli');
-var events = require('events');
+const events = require('events');
 
 const {
   lstatSync,
@@ -14,7 +14,7 @@ const {
 
 const isDirectory = source => lstatSync(source).isDirectory()
 const getDirectories = source =>
-  readdirSync(source).map(name => join(source, name)).filter(isDirectory)
+  readdirSync(source).map(name => join(source, name)).filter(isDirectory);
 
 class _events extends events {};
 
