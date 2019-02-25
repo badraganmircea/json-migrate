@@ -33,7 +33,7 @@ mutator[mutator.types.COPY] = function(inputConfig, mutation) {
   });
 }
 
-const migrate = (pathToMutations, pathToInputConfigs, fromVersion, toVersion) => {
+const migrate = (pathToMutations, pathToInputConfigs, fromVersion, toVersion, out) => {
   logger.operation('Starting migration to version ' + toVersion);
   logger.verticalSpace(1);
   logger.info('Reading mutations from: ', 0, pathToMutations);
@@ -53,7 +53,14 @@ const migrate = (pathToMutations, pathToInputConfigs, fromVersion, toVersion) =>
       mutator[type](input, definition);
     });
     logger.success('--- Successfully mutate: ', 0, configPath);
-  })
+    if (out) {
+      mutateUtils.createDirectory(out);
+      mutateUtils.createFile(`${out}/${configPath}`, input);
+      logger.success('--- Wrote output to: ', 0, `${out}/${configPath}`);
+    }
+  });
+  logger.verticalSpace(1);
+  logger.operation('Migration to version ' + toVersion + ' was successfull');
 }
 
 module.exports = migrate;

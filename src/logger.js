@@ -1,9 +1,10 @@
 const logger = {};
 
 const colors = {
-  info: '\x1b[34m',
+  info: '\x1b[33m',
   operation: '\x1b[32m',
-  reset: '\x1b[0m'
+  reset: '\x1b[0m',
+  error: '\x1b[31m'
 }
 
 const alignment = 40;
@@ -56,6 +57,12 @@ logger.success = function(text, padding, info = '') {
   const line = _addPadding(padding);
   const align = _addAlignment(text);
   console.log(`${colors.operation}%s${colors.reset}`, line + text + align + info);
+}
+
+logger.error = function(text, padding, info = '') {
+  const line = _addPadding(padding);
+  const align = _addAlignment(text);
+  console.log(`${colors.error}%s${colors.reset}`, line + text + align + info);
 }
 
 logger.verticalSpace = function(spaces) {

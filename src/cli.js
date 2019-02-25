@@ -90,10 +90,13 @@ cli.responders.migrate = function(str) {
       if (inputs[0].indexOf('pathToInputConfigs') > -1) {
         gatheredInputs.pathToInputConfigs = inputs[0].split('=')[1];
       }
+      if (inputs[0].indexOf('out') > -1) {
+        gatheredInputs.out = inputs[0].split('=')[1];
+      }
     }
   } while(inputs);
 
-  migrate(gatheredInputs.pathToMutations, gatheredInputs.pathToInputConfigs, null, gatheredInputs.version);
+  migrate(gatheredInputs.pathToMutations, gatheredInputs.pathToInputConfigs, null, gatheredInputs.version, gatheredInputs.out);
 }
 
 cli.responders.exit = function() {
