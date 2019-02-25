@@ -1,18 +1,7 @@
 const fs = require('fs');
 require('object-mutate/objectUtils');
-
-const readJson = (path) => {
-  console.log('reading file...', path);
-  const file = fs.readFileSync(path).toString();
-  console.log('done reading the file...');
-  console.log(file);
-  return JSON.parse(file);
-}
-
-const readMutationFileByVersion = (pathToMutationsFile, version) => {
-  const path = `${pathToMutationsFile}/v${version}/mutations.json`;
-  return readJson(path);
-}
+const mutateUtils = require('./utils');
+const logger = require('./logger');
 
 const mutator = {};
 
@@ -44,20 +33,27 @@ mutator[mutator.types.COPY] = function(inputConfig, mutation) {
   });
 }
 
-const migrate = (fromVersion, toVersion) => {
-  const mutations = readMutationFileByVersion('./mutations', toVersion).mutations;
-  const input = readJson('./input/inputConfig.json');
+const migrate = (pathToMutations, pathToInputConfigs, fromVersion, toVersion) => {
+  logger.operation('Starting migration to version ' + toVersion);
+  logger.verticalSpace(1);
+  logger.info('Reading mutations from: ', 0, pathToMutations);
+  const mutations = mutateUtils.readMutationFileByVersion(pathToMutations, toVersion).mutations;
+  logger.info('Reading configs from:   ', 0, pathToInputConfigs);
+  const configsList = mutateUtils.getFiles(pathToInputConfigs);
+  logger.verticalSpace(1);
 
-  console.log('beginning mutation for file');
-  mutations.forEach(mutation => {
-    console.log('attempting mutation', mutation);
-    const {
-      type,
-      definition
-    } = mutation;
-    mutator[type](input, definition);
-  });
-  console.log('result config is', JSON.stringify(input, null, 2));
+  configsList.forEach(configPath => {
+    logger.info('Begin mutations of: ', 0, configPath);
+    const input = mutateUtils.readJson(pathToInputConfigs + '/' + configPath);
+    mutations.forEach(mutation => {
+      const {
+        type,
+        definition
+      } = mutation;
+      mutator[type](input, definition);
+    });
+    logger.success('--- Successfully mutate: ', 0, configPath);
+  })
 }
 
-migrate(null, 1);
+module.exports = migrate;
