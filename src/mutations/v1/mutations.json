@@ -1,18 +1,15 @@
 {
-  "version": "3",
-  "mutations": {
-    "COMPONENT1": [
-      {
-        "mutationType": "ADD",
-        "definition": {
-          "to": "otherFuckingProps",
-          "targetObject": {
-            "props35": {
-              "props36": "some value"
-            }
-          }
+  "version": "1",
+  "mutations": [
+    {
+      "type": "ADD",
+      "definition": {
+        "to": "config.x",
+        "value": 12,
+        "matchProperties": {
+          "type": "COMPONENT1"
         }
       }
-    ]
-  }
+    }
+  ]
 }
