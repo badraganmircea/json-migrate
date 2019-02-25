@@ -17,7 +17,8 @@ const readMutationFileByVersion = (pathToMutationsFile, version) => {
 const mutator = {};
 
 mutator.types = {
-  ADD: 'ADD'
+  ADD: 'ADD',
+  COPY: 'COPY'
 }
 
 mutator[mutator.types.ADD] = function(inputConfig, mutation) {
@@ -31,7 +32,17 @@ mutator[mutator.types.ADD] = function(inputConfig, mutation) {
   });
 }
 
+mutator[mutator.types.COPY] = function(inputConfig, mutation) {
+  const {
+    from,
+    to,
+    matchProperties
+  } = mutation;
 
+  inputConfig.copyFromKey(from, to, {
+    matchProperties
+  });
+}
 
 const migrate = (fromVersion, toVersion) => {
   const mutations = readMutationFileByVersion('./mutations', toVersion).mutations;
@@ -39,14 +50,14 @@ const migrate = (fromVersion, toVersion) => {
 
   console.log('beginning mutation for file');
   mutations.forEach(mutation => {
+    console.log('attempting mutation', mutation);
     const {
       type,
       definition
     } = mutation;
     mutator[type](input, definition);
   });
-
-  console.log('result config is', JSON.stringify(input, 2, null));
+  console.log('result config is', JSON.stringify(input, null, 2));
 }
 
 migrate(null, 1);

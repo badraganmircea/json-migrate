@@ -10,6 +10,16 @@
           "type": "COMPONENT1"
         }
       }
+    },
+    {
+      "type": "COPY",
+      "definition": {
+        "from": "config.x",
+        "to": "config.z",
+        "matchProperties": {
+          "type": "COMPONENT1"
+        }
+      }
     }
   ]
 }
