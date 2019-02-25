@@ -1,0 +1,10 @@
+{
+  "components": [
+    {
+      "type": "COMPONENT1",
+      "config": {
+        "property1": 10
+      }
+    }
+  ]
+}
