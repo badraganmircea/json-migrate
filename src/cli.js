@@ -27,7 +27,7 @@ cli.processInput = function(str) {
   if (!str) return;
   const uniqueInputs = [
     'help',
-    'exits',
+    'exit',
     'listversions'
   ];
 
@@ -62,11 +62,15 @@ e.on('listversions', function(str) {
 cli.responders = {};
 
 cli.responders.help = function() {
-  console.log('you asked for help..');
+  console.log('TODO-you asked for help..');
 }
 
 cli.responders.listVersions = function() {
   console.log(getDirectories('./mutations'));
+}
+
+cli.responders.exit = function() {
+  process.exit(0);
 }
 
 cli.init = function() {

@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/badraganmircea/json-migrate#readme",
   "dependencies": {
-    "object-mutate": "^0.2.0"
+    "object-mutate": "^0.2.2"
   }
 }
