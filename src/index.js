@@ -1,8 +1,5 @@
 require('object-mutate/objectUtils');
 const inputConfig = require('./input/inputConfig.json');
-const mutationConfig2 = require('./input/mutationsV2.json');
-const mutationConfig3 = require('./input/mutationsV3.json');
-const mutationConfig4 = require('./input/mutationsV4.json');
 const cli = require('./cli');
 
 // const mutationsList = [mutationConfig2, mutationConfig3, mutationConfig4];

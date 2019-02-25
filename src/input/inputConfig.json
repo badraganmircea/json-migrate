@@ -1,31 +1,10 @@
 {
-  "type": "meh",
-  "name": "meh",
-  "title": "meh.meh",
-  "configuration": {
-    "mutationVersion": "1",
-    "components": [
-      {
-        "type": "COMPONENT1",
-        "props": {
-          "prop1": "prop1 value",
-          "prop2": "prop2 value"
-        },
-        "otherFuckingProps": {
-          "prop12": {
-            "prop1": {
-              "value": "smt"
-            }
-          }
-        }
-      },
-      {
-        "type": "COMPONENT2",
-        "props": {
-          "prop1": "hjhjhjhj",
-          "prop2": "lklkllkll"
-        }
+  "components": [
+    {
+      "type": "COMPONENT1",
+      "config": {
+        "property1": 1
       }
-    ]
-  }
+    }
+  ]
 }
