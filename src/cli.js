@@ -40,7 +40,7 @@ cli.processInput = function(str) {
   })
 
   if (!matchedFound) {
-    console.log('specified command does not exist');
+    logger.info('specified command does not exist; type help to see available commands');
   }
 };
 
@@ -53,7 +53,7 @@ e.on('exit', function(str) {
 });
 
 e.on('listversions', function(str) {
-  cli.responders.listVersions();
+  cli.responders.listVersions(str);
 });
 
 e.on('migrate', function(str) {
@@ -63,11 +63,29 @@ e.on('migrate', function(str) {
 cli.responders = {};
 
 cli.responders.help = function() {
-  console.log('TODO-you asked for help..');
+  console.log('asking for help...');
+  logger.horizontalLine();
+
+  // migrate
+  logger.info('migrate');
+  logger.info('\t--version', 0, 'version to upgrade TO');
+  logger.info('\t--pathToMutations', 0, 'path to mutations file');
+  logger.info('\t--pathToInputConfigs', 0, 'path to input configs files');
+  logger.info('\t--out', 0, 'directory path to output the files after mutation');
+  logger.info('\tEXAMPLE', 0, 'migrate --version=1 --pathToMutations=./mutations --pathToInputConfigs=./input --out=./out');
+  logger.verticalSpace(1);
+
+  logger.info('exit', 0, '\texits the cli');
+  logger.horizontalLine();
 };
 
 cli.responders.listVersions = function() {
-  console.log(mutateUtils.getDirectories('./mutations'));
+  try {
+    console.log(mutateUtils.getDirectories('./mutations'));
+  } catch (e) {
+    logger.error('something went wrong, see the below stacktrace');
+    console.log(e);
+  }
 };
 
 cli.responders.migrate = function(str) {
@@ -83,6 +101,10 @@ cli.responders.migrate = function(str) {
     if (inputs) {
       if (inputs[0].indexOf('version') > -1) {
         gatheredInputs.version = inputs[0].split('=')[1];
+        if (!gatheredInputs.version) {
+          logger.error('looks like you forgot to specify the version you want to upgrade TO');
+          logger.info('use migrate --version={versionToUpgrade} to specify the version or type help for more complete working example');
+        }
       }
       if (inputs[0].indexOf('pathToMutations') > -1) {
         gatheredInputs.pathToMutations = inputs[0].split('=')[1];
@@ -96,7 +118,12 @@ cli.responders.migrate = function(str) {
     }
   } while (inputs);
 
-  migrate(gatheredInputs.pathToMutations, gatheredInputs.pathToInputConfigs, null, gatheredInputs.version, gatheredInputs.out);
+  try {
+    migrate(gatheredInputs.pathToMutations, gatheredInputs.pathToInputConfigs, null, gatheredInputs.version, gatheredInputs.out);
+  } catch (e) {
+    logger.error('something went wrong; see the below stackstrace');
+    console.log(e);
+  }
 }
 
 cli.responders.exit = function() {
