@@ -2,19 +2,14 @@ const readline = require('readline');
 const util = require('util');
 const debug = util.debuglog('cli');
 const events = require('events');
+const mutateUtils = require('./utils');
+const migrate = require('./mutate');
+const logger= require('./logger');
+const packageVersion = require('../package.json').version;
 
-const {
-  lstatSync,
-  readdirSync
-} = require('fs');
 const {
   join
 } = require('path');
-
-
-const isDirectory = source => lstatSync(source).isDirectory()
-const getDirectories = source =>
-  readdirSync(source).map(name => join(source, name)).filter(isDirectory);
 
 class _events extends events {};
 
@@ -25,24 +20,26 @@ const cli = {};
 cli.processInput = function(str) {
   str = typeof(str) == 'string' && str.trim().length > 0 ? str.trim() : false;
   if (!str) return;
+
   const uniqueInputs = [
     'help',
     'exit',
-    'listversions'
+    'listversions',
+    'migrate'
   ];
 
-  let matchedFount = false;
+  let matchedFound = false;
   let matchCount = 0;
 
   uniqueInputs.some(function(input) {
     if (str.toLowerCase().indexOf(input) > -1) {
-      matchedFount = true;
+      matchedFound = true;
       e.emit(input, str);
       return true;
     }
   })
 
-  if (!matchedFount) {
+  if (!matchedFound) {
     console.log('specified command does not exist');
   }
 };
@@ -57,24 +54,59 @@ e.on('exit', function(str) {
 
 e.on('listversions', function(str) {
   cli.responders.listVersions();
-})
+});
+
+e.on('migrate', function(str) {
+  cli.responders.migrate(str);
+});
 
 cli.responders = {};
 
 cli.responders.help = function() {
   console.log('TODO-you asked for help..');
-}
+};
 
 cli.responders.listVersions = function() {
-  console.log(getDirectories('./mutations'));
+  console.log(mutateUtils.getDirectories('./mutations'));
+};
+
+cli.responders.migrate = function(str) {
+  // TODO: this parser logic in separate function
+  const argumentsRegex = new RegExp(/("[^"\\]*(?:\\[\S\s][^"\\]*)*"|'[^'\\]*(?:\\[\S\s][^'\\]*)*'|\/[^\/\\]*(?:\\[\S\s][^\/\\]*)*\/[gimy]*(?=\s|$)|(?:\\\s|\S)+)/g);
+  let inputs;
+  const gatheredInputs = {};
+
+  do {
+    // gather inputs
+    inputs = argumentsRegex.exec(str);
+
+    if (inputs) {
+      if (inputs[0].indexOf('version') > -1) {
+        gatheredInputs.version = inputs[0].split('=')[1];
+      }
+      if (inputs[0].indexOf('pathToMutations') > -1) {
+        gatheredInputs.pathToMutations = inputs[0].split('=')[1];
+      }
+      if (inputs[0].indexOf('pathToInputConfigs') > -1) {
+        gatheredInputs.pathToInputConfigs = inputs[0].split('=')[1];
+      }
+      if (inputs[0].indexOf('out') > -1) {
+        gatheredInputs.out = inputs[0].split('=')[1];
+      }
+    }
+  } while(inputs);
+
+  migrate(gatheredInputs.pathToMutations, gatheredInputs.pathToInputConfigs, null, gatheredInputs.version, gatheredInputs.out);
 }
 
 cli.responders.exit = function() {
   process.exit(0);
-}
+};
 
 cli.init = function() {
-  console.log('\x1b[34m%s\x1b[0m', 'the cli is running');
+  logger.horizontalLine();
+  logger.info('JSON-MIGRATE v'+ packageVersion);
+  logger.horizontalLine();
 
   const _interface = readline.createInterface({
     input: process.stdin,
@@ -86,6 +118,7 @@ cli.init = function() {
 
   _interface.on('line', function(str) {
     cli.processInput(str);
+    logger.verticalSpace(1);
     _interface.prompt();
   })
 
