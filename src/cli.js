@@ -4,7 +4,7 @@ const debug = util.debuglog('cli');
 const events = require('events');
 const mutateUtils = require('./utils');
 const migrate = require('./mutate');
-const logger= require('./logger');
+const logger = require('./logger');
 const packageVersion = require('../package.json').version;
 
 const {
@@ -94,7 +94,7 @@ cli.responders.migrate = function(str) {
         gatheredInputs.out = inputs[0].split('=')[1];
       }
     }
-  } while(inputs);
+  } while (inputs);
 
   migrate(gatheredInputs.pathToMutations, gatheredInputs.pathToInputConfigs, null, gatheredInputs.version, gatheredInputs.out);
 }
@@ -105,7 +105,7 @@ cli.responders.exit = function() {
 
 cli.init = function() {
   logger.horizontalLine();
-  logger.info('JSON-MIGRATE v'+ packageVersion);
+  logger.info('JSON-MIGRATE v' + packageVersion);
   logger.horizontalLine();
 
   const _interface = readline.createInterface({

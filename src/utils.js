@@ -22,7 +22,7 @@ mutateUtils.getDirectories = source => readdirSync(source).map(name => join(sour
 mutateUtils.getFiles = source => readdirSync(source);
 
 mutateUtils.createDirectory = source => {
-  if (!existsSync(source)){
+  if (!existsSync(source)) {
     mkdirSync(source);
   }
 }

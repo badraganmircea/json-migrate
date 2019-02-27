@@ -12,7 +12,7 @@ const alignment = 40;
 logger.horizontalLine = function() {
   const width = process.stdout.columns;
   let line = '';
-  for (let i = width; i > 0 ; i --) {
+  for (let i = width; i > 0; i--) {
     line += '-'
   }
   console.log(`${colors.info}%s${colors.reset}`, line);
@@ -36,7 +36,7 @@ const _addAlignment = function(text) {
   const spacesToBeAdded = alignment - text.length;
   let line = '';
   for (let i = spacesToBeAdded; i > 0; i--) {
-    line+= ' ';
+    line += ' ';
   }
   return line;
 };
