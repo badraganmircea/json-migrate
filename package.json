@@ -1,7 +1,7 @@
 {
   "name": "json-migrate",
-  "version": "0.0.3",
-  "description": "",
+  "version": "0.0.4",
+  "description": "cli for upgrading/maintaining and modifying JSON files",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/badraganmircea/json-migrate#readme",
   "dependencies": {
-    "object-mutate": "0.2.3"
+    "object-mutate": "0.2.4"
   }
 }
