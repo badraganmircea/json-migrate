@@ -72,7 +72,7 @@ cli.responders.help = function() {
   logger.info('\t--pathToMutations', 0, 'path to mutations file');
   logger.info('\t--pathToInputConfigs', 0, 'path to input configs files');
   logger.info('\t--out', 0, 'directory path to output the files after mutation');
-  logger.info('\tEXAMPLE', 0, 'migrate --version=1 --pathToMutations=./mutations --pathToInputConfigs=./input --out=./out');
+  logger.info('\tEXAMPLE', 0, 'migrate --fromVersion=1 --toVersion=2 --pathToMutations=./mutations --pathToInputConfigs=./input --out=./out');
   logger.verticalSpace(1);
 
   logger.info('exit', 0, '\texits the cli');
@@ -99,11 +99,18 @@ cli.responders.migrate = function(str) {
     inputs = argumentsRegex.exec(str);
 
     if (inputs) {
-      if (inputs[0].indexOf('version') > -1) {
-        gatheredInputs.version = inputs[0].split('=')[1];
+      if (inputs[0].indexOf('fromVersion') > -1) {
+        gatheredInputs.fromVersion = inputs[0].split('=')[1];
+        if (!gatheredInputs.version) {
+          logger.error('looks like you forgot to specify the version you want to upgrade FROM');
+          logger.info('use migrate --fromVersion={versionToUpgrade} to specify the version or type help for more complete working example');
+        }
+      }
+      if (inputs[0].indexOf('toVersion') > -1) {
+        gatheredInputs.toVersion = inputs[0].split('=')[1];
         if (!gatheredInputs.version) {
           logger.error('looks like you forgot to specify the version you want to upgrade TO');
-          logger.info('use migrate --version={versionToUpgrade} to specify the version or type help for more complete working example');
+          logger.info('use migrate --toVersion={versionToUpgrade} to specify the version or type help for more complete working example');
         }
       }
       if (inputs[0].indexOf('pathToMutations') > -1) {
@@ -119,7 +126,7 @@ cli.responders.migrate = function(str) {
   } while (inputs);
 
   try {
-    migrate(gatheredInputs.pathToMutations, gatheredInputs.pathToInputConfigs, null, gatheredInputs.version, gatheredInputs.out);
+    migrate(gatheredInputs.pathToMutations, gatheredInputs.pathToInputConfigs, parseInt(gatheredInputs.fromVersion), parseInt(gatheredInputs.toVersion), gatheredInputs.out);
   } catch (e) {
     logger.error('something went wrong; see the below stackstrace');
     console.log(e);

@@ -45,4 +45,23 @@ mutateUtils.createInBetweenVersionsArr = (fromVersion, toVersion) => {
   return Object.keys([...Array(toVersion - fromVersion + 1)]).map((version, index) => fromVersion + index);
 }
 
+mutateUtils.readJsonIntoMemory = (pathToInputConfigs) => {
+  const configsList = mutateUtils.getFiles(pathToInputConfigs);
+  return configsList.map(configPath =>{
+      return {
+        ...mutateUtils.readJson(pathToInputConfigs + '/' + configPath),
+        path: configPath
+      }});
+  }
+
+mutateUtils.writeToOutputFolder = (inputList, out) => {
+  inputList.forEach(input => {
+    if (out) {
+      mutateUtils.createDirectory(out);
+      mutateUtils.createFile(`${out}/${input.path}`, input);
+      logger.success('--- Wrote output to: ', 0, `${out}/${input.path}`);
+    }
+  });
+}
+
 module.exports = mutateUtils;

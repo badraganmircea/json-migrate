@@ -36,35 +36,45 @@ mutator[mutator.types.COPY] = function(inputConfig, mutation) {
 const migrate = (pathToMutations, pathToInputConfigs, fromVersion, toVersion, out) => {
   logger.operation('Starting migration to version ' + toVersion);
   logger.verticalSpace(1);
-  logger.info('Reading mutations from: ', 0, pathToMutations);
-  const mutations = mutateUtils.readMutationFileByVersion(pathToMutations, toVersion).mutations;
-  logger.info('Reading configs from:   ', 0, pathToInputConfigs);
-  const configsList = mutateUtils.getFiles(pathToInputConfigs);
+
+  const inBetweenVersions = mutateUtils.createInBetweenVersionsArr(fromVersion, toVersion);
+
+  logger.info('Doing the following migration steps', 0, inBetweenVersions);
   logger.verticalSpace(1);
 
-  configsList.forEach(configPath => {
-    try {
-      logger.info('Begin mutations of: ', 0, configPath);
-      const input = mutateUtils.readJson(pathToInputConfigs + '/' + configPath);
-      mutations.forEach(mutation => {
-        const {
-          type,
-          definition
-        } = mutation;
-        mutator[type](input, definition);
-      });
-      logger.success('--- Successfully mutate: ', 0, configPath);
-      if (out) {
-        mutateUtils.createDirectory(out);
-        mutateUtils.createFile(`${out}/${configPath}`, input);
-        logger.success('--- Wrote output to: ', 0, `${out}/${configPath}`);
+  const inputList = mutateUtils.readJsonIntoMemory(pathToInputConfigs);
+
+  inBetweenVersions.forEach(version => {
+    logger.info('Reading mutations from: ', 0, pathToMutations + '/v' + version);
+    const mutations = mutateUtils.readMutationFileByVersion(pathToMutations, version).mutations;
+    logger.verticalSpace(1);
+
+    inputList.forEach(input => {
+      try {
+        logger.info('Begin mutations of: ', 0, input.path);
+        mutations.forEach(mutation => {
+          const {
+            type,
+            definition
+          } = mutation;
+          mutator[type](input, definition);
+        });
+        logger.success('--- Successfully mutate: ', 0, input.path);
+      } catch(e) {
+        logger.error('Could not migrate the following configuration ', 0, input.path);
+        logger.error(e);
       }
-    } catch(e) {
-      logger.error('Could not migrate the following configuration ', 0, configPath);
-    }
+    });
+
+    logger.verticalSpace(1);
+    logger.operation('Migration to version ' + version + ' was successfull');
+    logger.verticalSpace(1);
   });
+
+  mutateUtils.writeToOutputFolder(inputList, out);
+  
   logger.verticalSpace(1);
-  logger.operation('Migration to version ' + toVersion + ' was successfull');
+  logger.operation('Migration complete!');
 }
 
 module.exports = migrate;

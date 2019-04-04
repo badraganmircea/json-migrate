@@ -1,13 +1,15 @@
 {
   "version": "2",
-  "mutations": {
-    "COMPONENT1": [
-      {
-        "mutationType": "DELETE",
-        "definition": {
-          "from": "otherFuckingProps.prop12"
+  "mutations": [
+    {
+      "type": "ADD",
+      "definition": {
+        "to": "config.x",
+        "value": 15,
+        "matchProperties": {
+          "type": "COMPONENT1"
         }
       }
-    ]
-  }
+    }
+  ]
 }
