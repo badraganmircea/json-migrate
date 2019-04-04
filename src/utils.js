@@ -41,4 +41,8 @@ mutateUtils.readMutationFileByVersion = (pathToMutationsFile, version) => {
   return mutateUtils.readJson(path);
 }
 
+mutateUtils.createInBetweenVersionsArr = (fromVersion, toVersion) => {
+  return Object.keys([...Array(toVersion - fromVersion + 1)]).map((version, index) => fromVersion + index);
+}
+
 module.exports = mutateUtils;
