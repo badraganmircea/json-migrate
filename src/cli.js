@@ -101,14 +101,14 @@ cli.responders.migrate = function(str) {
     if (inputs) {
       if (inputs[0].indexOf('fromVersion') > -1) {
         gatheredInputs.fromVersion = inputs[0].split('=')[1];
-        if (!gatheredInputs.version) {
+        if (!gatheredInputs.fromVersion) {
           logger.error('looks like you forgot to specify the version you want to upgrade FROM');
           logger.info('use migrate --fromVersion={versionToUpgrade} to specify the version or type help for more complete working example');
         }
       }
       if (inputs[0].indexOf('toVersion') > -1) {
         gatheredInputs.toVersion = inputs[0].split('=')[1];
-        if (!gatheredInputs.version) {
+        if (!gatheredInputs.toVersion) {
           logger.error('looks like you forgot to specify the version you want to upgrade TO');
           logger.info('use migrate --toVersion={versionToUpgrade} to specify the version or type help for more complete working example');
         }
