@@ -1,6 +1,6 @@
 {
   "name": "json-migrate",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "cli for upgrading/maintaining and modifying JSON files",
   "main": "index.js",
   "scripts": {

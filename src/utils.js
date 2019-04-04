@@ -58,8 +58,10 @@ mutateUtils.writeToOutputFolder = (inputList, out) => {
   inputList.forEach(input => {
     if (out) {
       mutateUtils.createDirectory(out);
-      mutateUtils.createFile(`${out}/${input.path}`, input);
-      logger.success('--- Wrote output to: ', 0, `${out}/${input.path}`);
+      const path = input.path;
+      delete input.path;
+      mutateUtils.createFile(`${out}/${path}`, input);
+      logger.success('--- Wrote output to: ', 0, `${out}/${path}`);
     }
   });
 }
