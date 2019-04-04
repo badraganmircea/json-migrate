@@ -1,6 +1,6 @@
 {
   "name": "json-migrate",
-  "version": "0.0.5",
+  "version": "0.0.10",
   "description": "cli for upgrading/maintaining and modifying JSON files",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,14 @@
   },
   "homepage": "https://github.com/badraganmircea/json-migrate#readme",
   "dependencies": {
-    "object-mutate": "0.2.4"
+    "json-stable-stringify": "^1.0.1",
+    "object-mutate": "0.2.5"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "preferGlobal": true,
+  "bin": {
+    "json-migrate": "./src/cli-init.js"
   }
 }

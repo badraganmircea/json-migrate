@@ -43,20 +43,24 @@ const migrate = (pathToMutations, pathToInputConfigs, fromVersion, toVersion, ou
   logger.verticalSpace(1);
 
   configsList.forEach(configPath => {
-    logger.info('Begin mutations of: ', 0, configPath);
-    const input = mutateUtils.readJson(pathToInputConfigs + '/' + configPath);
-    mutations.forEach(mutation => {
-      const {
-        type,
-        definition
-      } = mutation;
-      mutator[type](input, definition);
-    });
-    logger.success('--- Successfully mutate: ', 0, configPath);
-    if (out) {
-      mutateUtils.createDirectory(out);
-      mutateUtils.createFile(`${out}/${configPath}`, input);
-      logger.success('--- Wrote output to: ', 0, `${out}/${configPath}`);
+    try {
+      logger.info('Begin mutations of: ', 0, configPath);
+      const input = mutateUtils.readJson(pathToInputConfigs + '/' + configPath);
+      mutations.forEach(mutation => {
+        const {
+          type,
+          definition
+        } = mutation;
+        mutator[type](input, definition);
+      });
+      logger.success('--- Successfully mutate: ', 0, configPath);
+      if (out) {
+        mutateUtils.createDirectory(out);
+        mutateUtils.createFile(`${out}/${configPath}`, input);
+        logger.success('--- Wrote output to: ', 0, `${out}/${configPath}`);
+      }
+    } catch(e) {
+      logger.error('Could not migrate the following configuration ', 0, configPath);
     }
   });
   logger.verticalSpace(1);

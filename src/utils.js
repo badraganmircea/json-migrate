@@ -1,3 +1,5 @@
+const stringify = require('json-stable-stringify');
+
 const {
   lstatSync,
   readdirSync,
@@ -27,7 +29,7 @@ mutateUtils.createDirectory = source => {
   }
 }
 
-mutateUtils.createFile = (source, data) => writeFileSync(source, JSON.stringify(data, null, 2));
+mutateUtils.createFile = (source, data) => writeFileSync(source, stringify(data, {space: 4}));
 
 mutateUtils.readJson = (path) => {
   const file = readFileSync(path).toString();
