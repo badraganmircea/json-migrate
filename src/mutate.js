@@ -42,39 +42,41 @@ const migrate = (pathToMutations, pathToInputConfigs, fromVersion, toVersion, ou
   logger.info('Doing the following migration steps', 0, inBetweenVersions);
   logger.verticalSpace(1);
 
-  const inputList = mutateUtils.readJsonIntoMemory(pathToInputConfigs);
-
-  inBetweenVersions.forEach(version => {
-    logger.info('Reading mutations from: ', 0, pathToMutations + '/v' + version);
-    const mutations = mutateUtils.readMutationFileByVersion(pathToMutations, version).mutations;
-    logger.verticalSpace(1);
-
-    inputList.forEach(input => {
-      try {
-        logger.info('Begin mutations of: ', 0, input.path);
-        mutations.forEach(mutation => {
-          const {
-            type,
-            definition
-          } = mutation;
-          mutator[type](input, definition);
+  mutateUtils.readJsonIntoMemory(pathToInputConfigs)
+    .then(inputList => {
+      inBetweenVersions.forEach(version => {
+        logger.info('Reading mutations from: ', 0, pathToMutations + '/v' + version);
+        const mutations = mutateUtils.readMutationFileByVersion(pathToMutations, version).mutations;
+        logger.verticalSpace(1);
+        inputList.forEach(input => {
+          try {
+            logger.info('Begin mutations of: ', 0, input.path);
+            // mutations.forEach(mutation => {
+            //   const {
+            //     type,
+            //     definition
+            //   } = mutation;
+            //   mutator[type](input, definition);
+            // });
+            logger.success('--- Successfully mutate: ', 0, input.path);
+          } catch(e) {
+            logger.error('Could not migrate the following configuration ', 0, input.path);
+            logger.error(e);
+          }
         });
-        logger.success('--- Successfully mutate: ', 0, input.path);
-      } catch(e) {
-        logger.error('Could not migrate the following configuration ', 0, input.path);
-        logger.error(e);
-      }
-    });
 
-    logger.verticalSpace(1);
-    logger.operation('Migration to version ' + version + ' was successfull');
-    logger.verticalSpace(1);
-  });
+        logger.verticalSpace(1);
+        logger.operation('Migration to version ' + version + ' was successfull');
+        logger.verticalSpace(1);
+      });
 
-  mutateUtils.writeToOutputFolder(inputList, out);
-  
-  logger.verticalSpace(1);
-  logger.operation('Migration complete!');
+      console.log(inputList);
+      mutateUtils.writeToOutputFolder(inputList, out);
+
+      logger.verticalSpace(1);
+      logger.operation('Migration complete!');
+    })
+    .catch(e => console.log(e));
 }
 
 module.exports = migrate;
