@@ -1,4 +1,6 @@
+require('object-mutate/objectUtils');
 const stringify = require('json-stable-stringify');
+const xml2js = require('xml2js');
 
 const {
   lstatSync,
@@ -29,16 +31,57 @@ mutateUtils.createDirectory = source => {
   }
 }
 
-mutateUtils.createFile = (source, data) => writeFileSync(source, stringify(data, {space: 4}));
+const formatTypes = {
+  JSON: 'json',
+  XML: 'xml'
+}
 
-mutateUtils.readJson = (path) => {
+mutateUtils.createFile = (source, data, format = formatTypes.JSON) => {
+  switch (format) {
+    case formatTypes.JSON:
+      writeFileSync(source, stringify(data, {
+        space: 4
+      }));
+      break;
+    case formatTypes.XML:
+      writeFileSync(source, data);
+      break;
+    default:
+      logger.error(`specified format is not supported, for now only ${formatTypes.JSON} and ${formatTypes.XML}`);
+  }
+}
+
+mutateUtils.parseXml = (file) =>
+  new Promise((resolve, reject) => {
+    const parser = new xml2js.Parser();
+    parser.parseString(file, function(err, result) {
+      if (err) {
+        reject(err);
+      }
+      resolve(result);
+    });
+  })
+
+mutateUtils.readJson = async (path) => {
   const file = readFileSync(path).toString();
-  return JSON.parse(file);
+  if (path.indexOf('.json') > 0) {
+    return await JSON.parse(file);
+  }
+  if (path.indexOf('.xml') > 0) {
+    return await mutateUtils.parseXml(file);
+  }
+}
+
+mutateUtils.readJsonSync = (path) => {
+  const file = readFileSync(path).toString();
+  if (path.indexOf('.json') > 0) {
+    return JSON.parse(file);
+  }
 }
 
 mutateUtils.readMutationFileByVersion = (pathToMutationsFile, version) => {
   const path = `${pathToMutationsFile}/v${version}/mutations.json`;
-  return mutateUtils.readJson(path);
+  return mutateUtils.readJsonSync(path);
 }
 
 mutateUtils.createInBetweenVersionsArr = (fromVersion, toVersion) => {
@@ -47,12 +90,16 @@ mutateUtils.createInBetweenVersionsArr = (fromVersion, toVersion) => {
 
 mutateUtils.readJsonIntoMemory = (pathToInputConfigs) => {
   const configsList = mutateUtils.getFiles(pathToInputConfigs);
-  return configsList.map(configPath =>{
+  return Promise.all(
+    configsList.map(async configPath => {
+      const objConfig = await mutateUtils.readJson(pathToInputConfigs + '/' + configPath);
       return {
-        ...mutateUtils.readJson(pathToInputConfigs + '/' + configPath),
+        ...objConfig,
         path: configPath
-      }});
-  }
+      };
+    })
+  )
+}
 
 mutateUtils.writeToOutputFolder = (inputList, out) => {
   inputList.forEach(input => {
@@ -60,7 +107,13 @@ mutateUtils.writeToOutputFolder = (inputList, out) => {
       mutateUtils.createDirectory(out);
       const path = input.path;
       delete input.path;
-      mutateUtils.createFile(`${out}/${path}`, input);
+      if (path.indexOf('.xml') > 0) {
+        const builder = new xml2js.Builder();
+        const xml = builder.buildObject(input);
+        mutateUtils.createFile(`${out}/${path}`, xml, formatTypes.XML);
+      } else {
+        mutateUtils.createFile(`${out}/${path}`, input, formatTypes.JSON);
+      }
       logger.success('--- Wrote output to: ', 0, `${out}/${path}`);
     }
   });

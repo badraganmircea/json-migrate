@@ -1,2 +1,5 @@
 src/__tests__
 .idea/*
+src/input
+src/out
+src/mutations

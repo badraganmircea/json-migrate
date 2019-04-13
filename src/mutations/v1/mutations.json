@@ -12,10 +12,20 @@
       }
     },
     {
+      "type": "ADD",
+      "definition": {
+        "to": "oo",
+        "value": 12,
+        "matchProperties": {
+          "id": "randomid"
+        }
+      }
+    },
+    {
       "type": "COPY",
       "definition": {
-        "from": "config.x",
-        "to": "config.z",
+        "from": "config.property2",
+        "to": "shit",
         "matchProperties": {
           "type": "COMPONENT1"
         }
