@@ -1,4 +1,3 @@
-require('object-mutate/objectUtils');
 const stringify = require('json-stable-stringify');
 const xml2js = require('xml2js');
 
