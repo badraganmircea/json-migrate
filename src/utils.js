@@ -31,9 +31,25 @@ mutateUtils.createDirectory = source => {
   }
 }
 
-mutateUtils.createFile = (source, data) => writeFileSync(source, stringify(data, {
-  space: 4
-}));
+const formatTypes = {
+  JSON: 'json',
+  XML: 'xml'
+}
+
+mutateUtils.createFile = (source, data, format = formatTypes.JSON) => {
+  switch (format) {
+    case formatTypes.JSON:
+      writeFileSync(source, stringify(data, {
+        space: 4
+      }));
+      break;
+    case formatTypes.XML:
+      writeFileSync(source, data);
+      break;
+    default:
+      logger.error(`specified format is not supported, for now only ${formatTypes.JSON} and ${formatTypes.XML}`);
+  }
+}
 
 mutateUtils.parseXml = (file) =>
   new Promise((resolve, reject) => {
@@ -93,17 +109,10 @@ mutateUtils.writeToOutputFolder = (inputList, out) => {
       delete input.path;
       if (path.indexOf('.xml') > 0) {
         const builder = new xml2js.Builder();
-        const xml = builder.buildObject({
-          root: {
-            $: {
-              id: "my id"
-            },
-            _: "my inner text"
-          }
-        });
-        mutateUtils.createFile(`${out}/${path}`, xml);
+        const xml = builder.buildObject(input);
+        mutateUtils.createFile(`${out}/${path}`, xml, formatTypes.XML);
       } else {
-        mutateUtils.createFile(`${out}/${path}`, input);
+        mutateUtils.createFile(`${out}/${path}`, input, formatTypes.JSON);
       }
       logger.success('--- Wrote output to: ', 0, `${out}/${path}`);
     }
