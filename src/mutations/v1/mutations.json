@@ -14,8 +14,8 @@
     {
       "type": "COPY",
       "definition": {
-        "from": "config.x",
-        "to": "config.z",
+        "from": "config.property2",
+        "to": "shit",
         "matchProperties": {
           "type": "COMPONENT1"
         }

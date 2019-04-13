@@ -3,7 +3,10 @@
     {
       "type": "COMPONENT1",
       "config": {
-        "property1": 1
+        "property1": 1,
+        "property2": {
+          
+        }
       }
     }
   ]

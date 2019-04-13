@@ -1,5 +1,7 @@
 const fs = require('fs');
-require('object-mutate/objectUtils');
+const {
+  Mutate
+} = require('object-mutate/objectUtils');
 const mutateUtils = require('./utils');
 const logger = require('./logger');
 
@@ -16,9 +18,13 @@ mutator[mutator.types.ADD] = function(inputConfig, mutation) {
     value,
     matchProperties
   } = mutation;
-  inputConfig.addToKey(to, value, {
+
+  const output = new Mutate(inputConfig);
+  output.addToKey(to, value, {
     matchProperties
   });
+
+  return output.value();
 }
 
 mutator[mutator.types.COPY] = function(inputConfig, mutation) {
@@ -28,9 +34,12 @@ mutator[mutator.types.COPY] = function(inputConfig, mutation) {
     matchProperties
   } = mutation;
 
-  inputConfig.copyFromKey(from, to, {
+  const output = new Mutate(inputConfig);
+  output.copyFromKey(from, to, {
     matchProperties
   });
+
+  return output.value();
 }
 
 const migrate = (pathToMutations, pathToInputConfigs, fromVersion, toVersion, out) => {
@@ -44,22 +53,29 @@ const migrate = (pathToMutations, pathToInputConfigs, fromVersion, toVersion, ou
 
   mutateUtils.readJsonIntoMemory(pathToInputConfigs)
     .then(inputList => {
+      let outputList = inputList;
       inBetweenVersions.forEach(version => {
         logger.info('Reading mutations from: ', 0, pathToMutations + '/v' + version);
         const mutations = mutateUtils.readMutationFileByVersion(pathToMutations, version).mutations;
         logger.verticalSpace(1);
-        inputList.forEach(input => {
+        outputList = outputList.map(input => {
           try {
             logger.info('Begin mutations of: ', 0, input.path);
-            // mutations.forEach(mutation => {
-            //   const {
-            //     type,
-            //     definition
-            //   } = mutation;
-            //   mutator[type](input, definition);
-            // });
+            let output = input;
+
+            mutations.forEach(mutation => {
+              const {
+                type,
+                definition
+              } = mutation;
+
+              output = mutator[type](output, definition);
+            });
+
             logger.success('--- Successfully mutate: ', 0, input.path);
-          } catch(e) {
+
+            return output;
+          } catch (e) {
             logger.error('Could not migrate the following configuration ', 0, input.path);
             logger.error(e);
           }
@@ -70,13 +86,15 @@ const migrate = (pathToMutations, pathToInputConfigs, fromVersion, toVersion, ou
         logger.verticalSpace(1);
       });
 
-      console.log(inputList);
-      mutateUtils.writeToOutputFolder(inputList, out);
+      mutateUtils.writeToOutputFolder(outputList, out);
 
       logger.verticalSpace(1);
       logger.operation('Migration complete!');
     })
-    .catch(e => console.log(e));
+    .catch(e => {
+      logger.error('Something went wrong, check below stacktrace');
+      logger.error(e);
+    });
 }
 
 module.exports = migrate;

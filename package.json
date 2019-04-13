@@ -18,7 +18,7 @@
   "homepage": "https://github.com/badraganmircea/json-migrate#readme",
   "dependencies": {
     "json-stable-stringify": "^1.0.1",
-    "object-mutate": "0.2.5",
+    "object-mutate": "1.0.1",
     "xml2js": "^0.4.19"
   },
   "engines": {
