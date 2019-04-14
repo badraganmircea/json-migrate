@@ -68,7 +68,8 @@ cli.responders.help = function() {
 
   // migrate
   logger.info('migrate');
-  logger.info('\t--version', 0, 'version to upgrade TO');
+  logger.info('\t--fromVersion', 0, 'version to upgrade FROM; this one included');
+  logger.info('\t--toVersion', 0, 'version to upgrade TO; this one included');
   logger.info('\t--pathToMutations', 0, 'path to mutations file');
   logger.info('\t--pathToInputConfigs', 0, 'path to input configs files');
   logger.info('\t--out', 0, 'directory path to output the files after mutation');
