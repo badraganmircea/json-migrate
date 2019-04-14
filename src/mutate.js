@@ -43,7 +43,7 @@ mutator[mutator.types.COPY] = function(inputConfig, mutation) {
 }
 
 const migrate = (pathToMutations, pathToInputConfigs, fromVersion, toVersion, out) => {
-  logger.operation('Starting migration to version ' + toVersion);
+  logger.operation(`Starting migration from version ${fromVersion} to ${toVersion}`);
   logger.verticalSpace(1);
 
   const inBetweenVersions = mutateUtils.createInBetweenVersionsArr(fromVersion, toVersion);
