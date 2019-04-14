@@ -137,7 +137,7 @@ cli.responders.exit = function() {
   process.exit(0);
 };
 
-cli.init = function() {
+cli.initPrompt = function() {
   logger.horizontalLine();
   logger.info('JSON-MIGRATE v' + packageVersion);
   logger.horizontalLine();
@@ -145,20 +145,19 @@ cli.init = function() {
   const _interface = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    prompt: '> '
+    terminal: false
   });
-
-  _interface.prompt();
 
   _interface.on('line', function(str) {
     cli.processInput(str);
-    logger.verticalSpace(1);
-    _interface.prompt();
   })
+}
 
-  _interface.on('close', function() {
-    process.exit(0);
-  })
+cli.init = function() {
+  const argsLength = process.argv.length;
+  const args = process.argv.slice(2, argsLength);
+  const userInput = args.join(' ');
+  cli.processInput(userInput);
 }
 
 module.exports = cli;

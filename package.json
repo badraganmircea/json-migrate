@@ -26,6 +26,7 @@
   },
   "preferGlobal": true,
   "bin": {
-    "json-migrate": "./src/cli-init.js"
+    "json-migrate": "./src/cli-init.js",
+    "json-migrate-prompt": "./src/cli-init-prompt.js"
   }
 }
