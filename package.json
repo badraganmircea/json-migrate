@@ -1,6 +1,6 @@
 {
   "name": "json-migrate",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "description": "cli for upgrading/maintaining and modifying JSON files",
   "main": "index.js",
   "scripts": {
@@ -26,6 +26,7 @@
   },
   "preferGlobal": true,
   "bin": {
-    "json-migrate": "./src/cli-init.js"
+    "json-migrate": "./src/cli-init.js",
+    "json-migrate-prompt": "./src/cli-init-prompt.js"
   }
 }

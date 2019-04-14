@@ -68,7 +68,8 @@ cli.responders.help = function() {
 
   // migrate
   logger.info('migrate');
-  logger.info('\t--version', 0, 'version to upgrade TO');
+  logger.info('\t--fromVersion', 0, 'version to upgrade FROM; this one included');
+  logger.info('\t--toVersion', 0, 'version to upgrade TO; this one included');
   logger.info('\t--pathToMutations', 0, 'path to mutations file');
   logger.info('\t--pathToInputConfigs', 0, 'path to input configs files');
   logger.info('\t--out', 0, 'directory path to output the files after mutation');
@@ -137,7 +138,7 @@ cli.responders.exit = function() {
   process.exit(0);
 };
 
-cli.init = function() {
+cli.initPrompt = function() {
   logger.horizontalLine();
   logger.info('JSON-MIGRATE v' + packageVersion);
   logger.horizontalLine();
@@ -152,13 +153,15 @@ cli.init = function() {
 
   _interface.on('line', function(str) {
     cli.processInput(str);
-    logger.verticalSpace(1);
     _interface.prompt();
   })
+}
 
-  _interface.on('close', function() {
-    process.exit(0);
-  })
+cli.init = function() {
+  const argsLength = process.argv.length;
+  const args = process.argv.slice(2, argsLength);
+  const userInput = args.join(' ');
+  cli.processInput(userInput);
 }
 
 module.exports = cli;

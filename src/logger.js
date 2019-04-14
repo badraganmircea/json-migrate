@@ -7,7 +7,7 @@ const colors = {
   error: '\x1b[31m'
 }
 
-const alignment = 40;
+const alignment = 55;
 
 logger.horizontalLine = function() {
   const width = process.stdout.columns;
