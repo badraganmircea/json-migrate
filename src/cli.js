@@ -146,11 +146,14 @@ cli.initPrompt = function() {
   const _interface = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    terminal: false
+    prompt: '> '
   });
+
+  _interface.prompt();
 
   _interface.on('line', function(str) {
     cli.processInput(str);
+    _interface.prompt();
   })
 }
 
