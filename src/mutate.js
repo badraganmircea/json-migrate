@@ -59,9 +59,9 @@ const migrate = (pathToMutations, pathToInputConfigs, fromVersion, toVersion, ou
         const mutations = mutateUtils.readMutationFileByVersion(pathToMutations, version).mutations;
         logger.verticalSpace(1);
         outputList = outputList.map(input => {
+          let output = input;
           try {
             logger.info('Begin mutations of: ', 0, input.path);
-            let output = input;
 
             mutations.forEach(mutation => {
               const {
@@ -78,6 +78,7 @@ const migrate = (pathToMutations, pathToInputConfigs, fromVersion, toVersion, ou
           } catch (e) {
             logger.error('Could not migrate the following configuration ', 0, input.path);
             logger.error(e);
+            return output;
           }
         });
 
